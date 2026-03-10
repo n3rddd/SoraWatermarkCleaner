@@ -16,7 +16,7 @@ from sorawm.configs import (
 )
 from sorawm.constants import CHUNK_SIZE_PER_GB_VRAM
 from sorawm.models.model.e2fgvi_hq import InpaintGenerator
-from sorawm.utils.devices_utils import get_device
+from sorawm.utils.devices_utils import get_device, is_bf16_supported
 from sorawm.utils.download_utils import ensure_model_downloaded
 from sorawm.utils.mem_utils import memory_profiling
 from sorawm.utils.video_utils import merge_frames_with_overlap
@@ -93,7 +93,7 @@ class E2FGVIHDConfig(BaseModel):
     chunk_size_ratio: float = 0.2  # TODO: this can be adjust as the VRAM
     overlap_ratio: int = 0.05
     enable_torch_compile: bool = ENABLE_E2FGVI_HQ_TORCH_COMPILE
-    use_bf16: bool = False  # Enable bf16 inference for faster processing
+    use_bf16: bool = is_bf16_supported()  # Enable bf16 inference for faster processing
 
 
 class E2FGVIHDCleaner:

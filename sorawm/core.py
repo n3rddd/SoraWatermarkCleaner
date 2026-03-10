@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 import ffmpeg
 from sorawm.configs import DEFAULT_DETECT_BATCH_SIZE, ENABLE_E2FGVI_HQ_TORCH_COMPILE
+from sorawm.utils.devices_utils import is_bf16_supported
 from sorawm.schemas import CleanerType
 from sorawm.utils.imputation_utils import (
     find_2d_data_bkps,
@@ -27,7 +28,7 @@ class SoraWM:
         cleaner_type: CleanerType = CleanerType.LAMA,
         enable_torch_compile=ENABLE_E2FGVI_HQ_TORCH_COMPILE,
         detect_batch_size: int = DEFAULT_DETECT_BATCH_SIZE,  # default set as four, but can be adjusted...
-        use_bf16: bool = False,  # Enable bf16 inference for E2FGVI_HQ cleaner
+        use_bf16: bool = is_bf16_supported(),  # Enable bf16 inference for E2FGVI_HQ cleaner
     ):
         self.detector = SoraWaterMarkDetector()
         self.cleaner = WaterMarkCleaner(
