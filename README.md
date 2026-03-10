@@ -32,17 +32,13 @@ This project provides an elegant way to remove the sora watermark in the sora2 g
   </tr>
 </table>
 
-
 **Commercial Hosted Service & Sponsorship**
 
 >  If you prefer a one-click online service instead of running everything locally, you can use the hosted Sora watermark remover here:
->
+> 
 > 👉 **https://www.sorawatermarkremover.ai/**
->
+> 
 > SoraWatermarkRemover runs **SoraWatermarkCleaner** under the hood and provides GPU-backed processing, credits-based pricing and an easy web UI. This service financially supports the ongoing development and maintenance of **SoraWatermarkCleaner**.
->
-
-
 
 ⭐️: 
 
@@ -51,11 +47,14 @@ This project provides an elegant way to remove the sora watermark in the sora2 g
 - **We have provided another model which could preserve time consistency without flicker!**
 
 - **We support batch processing now.**
+
 - **For the new watermark with username,  the Yolo weights has been updated, try the new version watermark detect model, it should work better.**
 
 - **We have uploaded the labelled datasets into huggingface, check this [dataset](https://huggingface.co/datasets/LLinked/sora-watermark-dataset) out. Free free to train your custom detector model or improve our model!**
 
 - **One-click portable build is available** — [Download here](#3-one-click-portable-version) for Windows users! No installation required.
+
+- **Docker Compose deployment is now supported** — [Get started](#6-docker-compose-deployment) with a single command. Note: the image requires CUDA and is large (~20 GB) due to NVIDIA libraries and PyTorch.
 
 ---
 
@@ -68,12 +67,10 @@ The SoraWatermarkCleaner(we call it `SoraWm` later) is composed of two parsts:
 - SoraWaterMarkDetector: We trained a yolov11s version to detect the sora watermark. (Thank you yolo!)
 
 - WaterMarkCleaner: We refer iopaint's implementation for watermark removal using the lama model.
-
+  
   (This codebase is from https://github.com/Sanster/IOPaint#, thanks for their amazing work!)
 
 Our SoraWm is purely deeplearning driven and yields good results in many generated videos.
-
-
 
 ## 2. Installation
 
@@ -86,7 +83,7 @@ uv sync
 ```
 
 > now the envs will be installed at the `.venv`, you can activate the env using:
->
+> 
 > ```bash
 > source .venv/bin/activate
 > ```
@@ -96,7 +93,7 @@ uv sync
 The trained yolo weights will be stored in the `resources` dir as the `best.pt`.  And it will be automatically download from https://github.com/linkedlist771/SoraWatermarkCleaner/releases/download/V0.0.1/best.pt . The `Lama` model is downloaded from https://github.com/Sanster/models/releases/download/add_big_lama/big-lama.pt, and will be stored in the torch cache dir. Both downloads are automatic, if you fail, please check your internet status.
 
 3. Batch processing
-Use the cli.py for batch processing
+   Use the cli.py for batch processing
 
 ```
 python cli.py [-h] -i INPUT -o OUTPUT [-p PATTERN] [-m MODEL] [--quiet]
@@ -124,13 +121,16 @@ For users who prefer a ready-to-use solution without manual installation, we pro
 ### Download Links
 
 **Google Drive:**
+
 - [Download from Google Drive](https://drive.google.com/file/d/1ujH28aHaCXGgB146g6kyfz3Qxd-wHR1c/view?usp=share_link)
 
 **Baidu Pan (百度网盘) - For users in China:**
+
 - Link: https://pan.baidu.com/s/1onMom81mvw2c6PFkCuYzdg?pwd=jusu
 - Extract Code (提取码): `jusu`
 
 ### Features
+
 - ✅ No installation required
 - ✅ All dependencies included
 - ✅ Pre-configured environment
@@ -199,15 +199,14 @@ from sorawm.schemas import CleanerType
 if __name__ == "__main__":
     input_video_path = Path("resources/dog_vs_sam.mp4")
     output_video_path = Path("outputs/sora_watermark_removed")
-    
+
     # 1. LAMA is fast and good quality, but not time consistent.
     sora_wm = SoraWM(cleaner_type=CleanerType.LAMA)
     sora_wm.run(input_video_path, Path(f"{output_video_path}_lama.mp4"))
-    
+
     # 2. E2FGVI_HQ ensures time consistency, but will be very slow on no-cuda device.
     sora_wm = SoraWM(cleaner_type=CleanerType.E2FGVI_HQ)
     sora_wm.run(input_video_path, Path(f"{output_video_path}_e2fgvi_hq.mp4"))
-
 ```
 
 We also provide you with a `streamlit` based interactive web page, try it with:
@@ -223,8 +222,33 @@ streamlit run app.py
 Batch processing is also supported, now you can drag a folder or select multiple files to process.
 <img src="assests/streamlit_batch.png" style="zoom: 50%;" />
 
+## 6. Docker Compose Deployment
 
-## 6. WebServer
+The easiest way to deploy SoraWatermarkCleaner is via Docker Compose.
+
+> **Note:** The Docker image (`llinkedlist/sorawm:latest`) requires CUDA and includes NVIDIA libraries and PyTorch, making it quite large (~20 GB). The initial pull may take a significant amount of time depending on your network speed.
+
+**Prerequisites:**
+
+- [Docker](https://docs.docker.com/get-docker/) with [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) installed
+- A CUDA-capable GPU
+
+**Start the service:**
+
+```bash
+docker compose up -d
+```
+
+This will:
+
+- Pull the image from Docker Hub (first time only — be patient, ~20 GB)
+- Mount the current directory to `/workspace` inside the container
+- Cache model weights in `./.cache` to avoid re-downloading on restart
+- Expose the Streamlit UI on port **8501**
+
+Access the Streamlit UI at `http://localhost:8501`.
+
+## 7. WebServer
 
 Here, we provide a **FastAPI-based web server** that can quickly turn this watermark remover into a service.
 
@@ -253,7 +277,7 @@ You can view the FastAPI [documentation](http://localhost:5344/docs) for more de
 There are three routes available:
 
 1. **submit_remove_task**
-
+   
    > After uploading a video, a task ID will be returned, and the video will begin processing immediately.
 
 <img src="resources/53abf3fd-11a9-4dd7-a348-34920775f8ad.png" alt="image" style="zoom: 25%;" />
@@ -270,20 +294,19 @@ Once finished, the returned data will include a **download URL**.
 
 You can use the **download URL** from step 2 to retrieve the cleaned video.
 
-## 7. Datasets
+## 8. Datasets
 
 We have uploaded the labelled datasets into huggingface, check this out https://huggingface.co/datasets/LLinked/sora-watermark-dataset. Free free to train your custom detector model or improve our model!
 
-## 8. API
+## 9. API
 
 Packaged as a Cog and [published to Replicate](https://replicate.com/uglyrobot/sora2-watermark-remover) for simple API based usage.
 
-## 9. License
+## 10. License
 
  Apache License
 
-
-## 10. Citation
+## 11. Citation
 
 If you use this project, please cite:
 
@@ -296,7 +319,7 @@ If you use this project, please cite:
 }
 ```
 
-## 11. Acknowledgments
+## 12. Acknowledgments
 
 - [IOPaint](https://github.com/Sanster/IOPaint) for the LAMA implementation
 - [Ultralytics YOLO](https://github.com/ultralytics/ultralytics) for object detection
