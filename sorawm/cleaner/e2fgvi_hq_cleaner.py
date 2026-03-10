@@ -126,7 +126,7 @@ class E2FGVIHDCleaner:
 
         # Flag to track if artifacts have been saved
         self._artifacts_saved = False
-
+        
         self.profiling_chunk_size()
         self.auto_compile()
 
@@ -176,15 +176,22 @@ class E2FGVIHDCleaner:
 
         Profiles free device memory and computes adapted_chunk_size by multiplying the measured free memory (in GB) with CHUNK_SIZE_PER_GB_VRAM; stores the result in `self.adapted_chunk_size` and logs the chosen chunk size.
         """
-        memory_profiling_results = memory_profiling()
-        adapted_chunk_size = int(
-            memory_profiling_results.free_memory * CHUNK_SIZE_PER_GB_VRAM
-        )
-        self.adapted_chunk_size = adapted_chunk_size
-        logger.debug(
-            # keep two digit
-            f"Chunk size is set to {self.adapted_chunk_size} based on the free VRAM {round(memory_profiling_results.free_memory, 2)}GB"
-        )
+        if self.device.type != "cuda":
+            # For non-CUDA devices, use a default chunk size that is reasonable for CPU processing
+            self.adapted_chunk_size = CHUNK_SIZE_PER_GB_VRAM  
+            logger.debug(
+                f"Non-CUDA device detected. Using default chunk size: {self.adapted_chunk_size}"
+            )
+        else:
+            memory_profiling_results = memory_profiling()
+            adapted_chunk_size = int(
+                memory_profiling_results.free_memory * CHUNK_SIZE_PER_GB_VRAM
+            )
+            self.adapted_chunk_size = adapted_chunk_size
+            logger.debug(
+                # keep two digit
+                f"Chunk size is set to {self.adapted_chunk_size} based on the free VRAM {round(memory_profiling_results.free_memory, 2)}GB"
+            )
 
     @property
     def chunk_size(self):
