@@ -56,3 +56,9 @@ filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore::PendingDeprecationWarning",
 ]
+
+[tool.uv.extra-build-dependencies]
+mmcv-full = ["setuptools<81", "wheel", "packaging"]
+
+[tool.setuptools.packages.find]
+include = ["sorawm*"]
