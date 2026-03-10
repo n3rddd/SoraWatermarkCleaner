@@ -5,6 +5,7 @@ from typing import List
 import numpy as np
 
 from sorawm.cleaner.e2fgvi_hq_cleaner import E2FGVIHDCleaner, E2FGVIHDConfig
+from sorawm.utils.devices_utils import is_bf16_supported
 from sorawm.cleaner.lama_cleaner import LamaCleaner
 from sorawm.schemas import CleanerType
 
@@ -14,7 +15,7 @@ class WaterMarkCleaner:
         cls,
         cleaner_type: CleanerType,
         enable_torch_compile: bool,
-        use_bf16: bool = False,
+        use_bf16: bool = is_bf16_supported(),
     ):
         """
         Create and return an instance of the specified cleaner implementation.
