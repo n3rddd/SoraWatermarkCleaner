@@ -3,7 +3,6 @@ import math
 # CrossAttn precision handling
 import os
 from inspect import isfunction
-from typing import Any, Optional
 
 import torch
 import torch.nn.functional as F

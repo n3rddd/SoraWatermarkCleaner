@@ -2,7 +2,6 @@ import cv2
 import PIL.Image
 import torch
 from loguru import logger
-from PIL import Image
 
 from sorawm.iopaint.schema import InpaintRequest
 

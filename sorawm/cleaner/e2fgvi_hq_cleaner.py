@@ -126,7 +126,7 @@ class E2FGVIHDCleaner:
 
         # Flag to track if artifacts have been saved
         self._artifacts_saved = False
-        
+
         self.profiling_chunk_size()
         self.auto_compile()
 
@@ -178,7 +178,7 @@ class E2FGVIHDCleaner:
         """
         if self.device.type != "cuda":
             # For non-CUDA devices, use a default chunk size that is reasonable for CPU processing
-            self.adapted_chunk_size = CHUNK_SIZE_PER_GB_VRAM  
+            self.adapted_chunk_size = CHUNK_SIZE_PER_GB_VRAM
             logger.debug(
                 f"Non-CUDA device detected. Using default chunk size: {self.adapted_chunk_size}"
             )

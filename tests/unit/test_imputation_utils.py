@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 
 from sorawm.utils.imputation_utils import (

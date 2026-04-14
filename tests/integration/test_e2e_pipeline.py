@@ -12,7 +12,6 @@ Tests the complete pipeline with all optimizations:
 import os
 import tempfile
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 

@@ -14,7 +14,6 @@ except:
     logger.warning("mmcv is not available, using a fallback implementation")
     import torch
     import torch.nn as nn
-    import torch.nn.functional as F
 
     # Fallback: constant_init function
     def constant_init(module, val=0, bias=0):
