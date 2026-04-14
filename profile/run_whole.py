@@ -16,8 +16,6 @@ from sorawm.utils.imputation_utils import (
     get_interval_average_bbox,
 )
 from sorawm.utils.video_utils import VideoLoader, merge_frames_with_overlap
-from sorawm.watermark_cleaner import WaterMarkCleaner
-from sorawm.watermark_detector import SoraWaterMarkDetector
 
 
 @contextmanager

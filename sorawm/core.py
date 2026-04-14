@@ -393,21 +393,30 @@ class SoraWM:
         self, input_video_path: Path, temp_output_path: Path, output_video_path: Path
     ):
         logger.info("Merging audio track...")
-        video_stream = ffmpeg.input(str(temp_output_path))
-        audio_stream = ffmpeg.input(str(input_video_path)).audio
 
-        (
-            ffmpeg.output(
-                video_stream,
-                audio_stream,
-                str(output_video_path),
-                vcodec="copy",
-                acodec="aac",
+        # Check the video has an audio track or not
+        probe = ffmpeg.probe(str(input_video_path))
+        has_audio = any(s["codec_type"] == "audio" for s in probe["streams"])
+        if has_audio:
+            video_stream = ffmpeg.input(str(temp_output_path))
+            audio_stream = ffmpeg.input(str(input_video_path)).audio
+            (
+                ffmpeg.output(
+                    video_stream,
+                    audio_stream,
+                    str(output_video_path),
+                    vcodec="copy",
+                    acodec="aac",
+                )
+                .overwrite_output()
+                .run(quiet=True)
             )
-            .overwrite_output()
-            .run(quiet=True)
-        )
-        temp_output_path.unlink()
+        else:
+            logger.info("No audio track found, copying video only.")
+            temp_output_path.rename(output_video_path)
+
+        if temp_output_path.exists():
+            temp_output_path.unlink()
         logger.info(f"Saved no watermark video with audio at: {output_video_path}")
 
 

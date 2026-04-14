@@ -1,5 +1,3 @@
-import numpy as np
-import torch
 
 
 def append_dims(x, target_dims):

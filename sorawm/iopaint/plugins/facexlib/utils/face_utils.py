@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import torch
 
 
 def compute_increased_bbox(bbox, increase_area, preserve_aspect=True):

@@ -1,4 +1,3 @@
-import os
 
 import cv2
 from anytext_pipeline import AnyTextPipeline

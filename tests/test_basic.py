@@ -26,7 +26,7 @@ def test_schemas_import():
 def test_watermark_cleaner_factory():
     """Test watermark cleaner factory with mocking."""
     try:
-        from unittest.mock import MagicMock, patch
+        from unittest.mock import patch
 
         with (
             patch("sorawm.watermark_cleaner.LamaCleaner") as mock_lama,
@@ -62,7 +62,6 @@ def test_imputation_utils():
         # Mock the imputation functions to avoid ruptures dependency
         from unittest.mock import patch
 
-        import numpy as np
 
         with patch("sorawm.utils.imputation_utils.rpt") as mock_rpt:
             # Mock the CPD result

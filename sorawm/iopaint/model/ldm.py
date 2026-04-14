@@ -2,7 +2,6 @@ import os
 
 import numpy as np
 import torch
-from loguru import logger
 
 from sorawm.iopaint.schema import InpaintRequest, LDMSampler
 

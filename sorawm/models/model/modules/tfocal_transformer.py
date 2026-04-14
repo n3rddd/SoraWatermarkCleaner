@@ -281,21 +281,23 @@ class WindowAttention(nn.Module):
 
         # partition q map
         (q_windows, k_windows, v_windows) = map(
-            lambda t: window_partition(t, self.window_size)
-            .view(
-                -1,
-                T,
-                self.window_size[0] * self.window_size[1],
-                self.num_heads,
-                C // self.num_heads,
-            )
-            .permute(0, 3, 1, 2, 4)
-            .contiguous()
-            .view(
-                -1,
-                self.num_heads,
-                T * self.window_size[0] * self.window_size[1],
-                C // self.num_heads,
+            lambda t: (
+                window_partition(t, self.window_size)
+                .view(
+                    -1,
+                    T,
+                    self.window_size[0] * self.window_size[1],
+                    self.num_heads,
+                    C // self.num_heads,
+                )
+                .permute(0, 3, 1, 2, 4)
+                .contiguous()
+                .view(
+                    -1,
+                    self.num_heads,
+                    T * self.window_size[0] * self.window_size[1],
+                    C // self.num_heads,
+                )
             ),
             (q, k, v),
         )
@@ -433,26 +435,29 @@ class WindowAttention(nn.Module):
                 # self.unfolds[k](k_pooled_k) shape: [5, 23040 (512 * 5 * 9 ), 16]
 
                 (k_pooled_k, v_pooled_k) = map(
-                    lambda t: self.unfolds[k](t)
-                    .view(
-                        B,
-                        T,
-                        C,
-                        self.unfolds[k].kernel_size[0],
-                        self.unfolds[k].kernel_size[1],
-                        -1,
-                    )
-                    .permute(0, 5, 1, 3, 4, 2)
-                    .contiguous()
-                    .view(
-                        -1,
-                        T,
-                        self.unfolds[k].kernel_size[0] * self.unfolds[k].kernel_size[1],
-                        self.num_heads,
-                        C // self.num_heads,
-                    )
-                    .permute(0, 3, 1, 2, 4)
-                    .contiguous(),
+                    lambda t: (
+                        self.unfolds[k](t)
+                        .view(
+                            B,
+                            T,
+                            C,
+                            self.unfolds[k].kernel_size[0],
+                            self.unfolds[k].kernel_size[1],
+                            -1,
+                        )
+                        .permute(0, 5, 1, 3, 4, 2)
+                        .contiguous()
+                        .view(
+                            -1,
+                            T,
+                            self.unfolds[k].kernel_size[0]
+                            * self.unfolds[k].kernel_size[1],
+                            self.num_heads,
+                            C // self.num_heads,
+                        )
+                        .permute(0, 3, 1, 2, 4)
+                        .contiguous()
+                    ),
                     (
                         k_pooled_k,
                         v_pooled_k,

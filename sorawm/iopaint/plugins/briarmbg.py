@@ -1,5 +1,4 @@
 # copy from: https://huggingface.co/spaces/briaai/BRIA-RMBG-1.4/blob/main/briarmbg.py
-import cv2
 import numpy as np
 import torch
 import torch.nn as nn

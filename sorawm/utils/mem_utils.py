@@ -5,8 +5,7 @@ import gc
 
 # import time
 # from collections.abc import Generator
-from dataclasses import dataclass, field
-from functools import cache
+from dataclasses import dataclass
 
 # import psutil
 import torch

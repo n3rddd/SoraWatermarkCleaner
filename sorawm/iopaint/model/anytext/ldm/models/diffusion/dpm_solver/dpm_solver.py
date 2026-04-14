@@ -1,7 +1,6 @@
 import math
 
 import torch
-import torch.nn.functional as F
 from tqdm import tqdm
 
 
@@ -183,10 +182,8 @@ class NoiseScheduleVP:
             return t.reshape((-1,))
         else:
             log_alpha = -0.5 * torch.logaddexp(-2.0 * lamb, torch.zeros((1,)).to(lamb))
-            t_fn = (
-                lambda log_alpha_t: torch.arccos(
-                    torch.exp(log_alpha_t + self.cosine_log_alpha_0)
-                )
+            t_fn = lambda log_alpha_t: (
+                torch.arccos(torch.exp(log_alpha_t + self.cosine_log_alpha_0))
                 * 2.0
                 * (1.0 + self.cosine_s)
                 / math.pi
@@ -1129,8 +1126,8 @@ class DPM_Solver:
             lower_update = lambda x, s, t: self.dpm_solver_first_update(
                 x, s, t, return_intermediate=True
             )
-            higher_update = (
-                lambda x, s, t, **kwargs: self.singlestep_dpm_solver_second_update(
+            higher_update = lambda x, s, t, **kwargs: (
+                self.singlestep_dpm_solver_second_update(
                     x, s, t, r1=r1, solver_type=solver_type, **kwargs
                 )
             )
@@ -1139,8 +1136,8 @@ class DPM_Solver:
             lower_update = lambda x, s, t: self.singlestep_dpm_solver_second_update(
                 x, s, t, r1=r1, return_intermediate=True, solver_type=solver_type
             )
-            higher_update = (
-                lambda x, s, t, **kwargs: self.singlestep_dpm_solver_third_update(
+            higher_update = lambda x, s, t, **kwargs: (
+                self.singlestep_dpm_solver_third_update(
                     x, s, t, r1=r1, r2=r2, solver_type=solver_type, **kwargs
                 )
             )

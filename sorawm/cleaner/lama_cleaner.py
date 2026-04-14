@@ -1,8 +1,6 @@
-from pathlib import Path
 
 import cv2
 import numpy as np
-import torch
 from loguru import logger
 
 from sorawm.configs import DEFAULT_WATERMARK_REMOVE_MODEL

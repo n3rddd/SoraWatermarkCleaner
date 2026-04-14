@@ -9,13 +9,11 @@ from sorawm.iopaint.tests.utils import (
 )
 
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
-from pathlib import Path
 
 import pytest
 import torch
 
 from sorawm.iopaint.model_manager import ModelManager
-from sorawm.iopaint.schema import HDStrategy, SDSampler
 
 model_name = "runwayml/stable-diffusion-inpainting"
 

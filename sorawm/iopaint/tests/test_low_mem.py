@@ -1,6 +1,5 @@
 import os
 
-from loguru import logger
 
 from sorawm.iopaint.tests.utils import (
     assert_equal,
